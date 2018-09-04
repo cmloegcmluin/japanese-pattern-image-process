@@ -1,0 +1,6 @@
+{
+  "name": "japanese-pattern-image-process",
+  "devDependencies": {
+    "jimp": "^0.4.0"
+  }
+}

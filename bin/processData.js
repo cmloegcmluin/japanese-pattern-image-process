@@ -10,6 +10,7 @@ const fs = require('fs')
 
 const INPUT = 'data/data.csv'
 const OUTPUT_HTML = 'data/post.html'
+const OUTPUT_TAGS = 'data/tags.txt'
 
 const parseResult = entry => {
     const [
@@ -37,6 +38,7 @@ const parseResult = entry => {
     const [englishName, kanjiName, hiraganaReading, romaji, literalTranslation] = rawName.split('/').map(namePart => namePart.trim())
     const alternateNames = [alternateNameOne, alternateNameTwo, alternateNameThree, alternateNameFour]
 
+    fs.appendFileSync(OUTPUT_TAGS, [englishName, kanjiName, hiraganaReading, romaji].join(',') + ',')
 
     let html = ''
     html += maybeNewCategorySectionWithSideEffectOfUpdatingCurrentCategories({superCategory, subCategory})

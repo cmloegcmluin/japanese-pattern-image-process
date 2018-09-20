@@ -1,4 +1,5 @@
 node_modules/
-input/
-output/
+data/airtable.csv
+data/input
+data/output
 .idea/

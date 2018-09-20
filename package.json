@@ -1,6 +1,7 @@
 {
   "name": "japanese-pattern-image-process",
   "devDependencies": {
+    "csv-parse": "^3.0.0",
     "jimp": "^0.4.0"
   }
 }

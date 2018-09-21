@@ -22,7 +22,7 @@ fs.readdir('data/input', (err, filenames) => {
                         image.bitmap.data[i + 2] = 255
                     }
                 })
-                .write(`data/output/${filename}.png`)
+                .write(`data/output/${filename}`)
         })
     })
 })

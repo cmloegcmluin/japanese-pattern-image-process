@@ -32,7 +32,7 @@ const imagesSectionWithSideEffectOfDownloadingTheImages = ({rawName, rawFinalOrd
     const name = cleanupName(rawName)
     const finalOrder = prependZeroes(rawFinalOrder)
 
-    images.split(',').forEach((image, index) => {
+    images.split(',').sort().forEach((image, index) => {
         const filename = buildFilename({finalOrder, index, name})
 
         // WEEEE SIDE EFFECT!!!!

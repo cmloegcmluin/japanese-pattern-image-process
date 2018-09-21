@@ -4,6 +4,7 @@ const {
     imagesSectionWithSideEffectOfDownloadingTheImages,
     maybeExtraStuffSection,
 } = require('../src/htmlSections')
+const {prependZeroes} = require('../src/format')
 
 const parse = require('csv-parse')
 const fs = require('fs')
@@ -37,13 +38,14 @@ const parseResult = entry => {
     ] = entry
     const [englishName, kanjiName, hiraganaReading, romaji, literalTranslation] = rawName.split('/').map(namePart => namePart.trim())
     const alternateNames = [alternateNameOne, alternateNameTwo, alternateNameThree, alternateNameFour]
+    const finalOrder = prependZeroes(rawFinalOrder)
 
     fs.appendFileSync(OUTPUT_TAGS, [englishName, kanjiName, hiraganaReading, romaji].join(',') + ',')
 
     let html = ''
     html += maybeNewCategorySectionWithSideEffectOfUpdatingCurrentCategories({superCategory, subCategory})
-    html += nameSection({englishName, kanjiName, hiraganaReading, romaji, literalTranslation})
-    html += imagesSectionWithSideEffectOfDownloadingTheImages({rawName, rawFinalOrder, images})
+    html += nameSection({finalOrder, englishName, kanjiName, hiraganaReading, romaji, literalTranslation})
+    html += imagesSectionWithSideEffectOfDownloadingTheImages({rawName, finalOrder, images})
     html += maybeExtraStuffSection({notes, alternateNames})
 
     fs.appendFileSync(OUTPUT_HTML, html)

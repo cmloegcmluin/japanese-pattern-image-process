@@ -1,5 +1,5 @@
 const {downloadImage} = require('./download')
-const {buildFilename, cleanupName, prependZeroes} = require('./format')
+const {buildFilename, cleanupName} = require('./format')
 const {nameHtml, primaryImageHtml, supplementaryImageHtml, tieOffSectionHtml, superCategoryHtml, subCategoryHtml} = require('./htmlChunks')
 const currentCategories = require('./currentCategories')
 
@@ -26,11 +26,10 @@ const imageHtml = ({index, filename}) => {
     return index === 0 ? primaryImageHtml(wordpressFileUrl) : supplementaryImageHtml(wordpressFileUrl)
 }
 
-const imagesSectionWithSideEffectOfDownloadingTheImages = ({rawName, rawFinalOrder, images}) => {
+const imagesSectionWithSideEffectOfDownloadingTheImages = ({rawName, finalOrder, images}) => {
     let sectionHtml = ''
 
     const name = cleanupName(rawName)
-    const finalOrder = prependZeroes(rawFinalOrder)
 
     images.split(',').sort().forEach((image, index) => {
         const filename = buildFilename({finalOrder, index, name})

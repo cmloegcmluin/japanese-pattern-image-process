@@ -2,8 +2,9 @@ const superCategoryHtml = superCategory => `<h1 style="font-size: 48px; line-hei
 
 const subCategoryHtml = subCategory => `<h1 style="font-size: 36px; line-height: 36px;">${subCategory}</h1>\r\n`
 
-const nameHtml = ({englishName, kanjiName, hiraganaReading, romaji, literalTranslation}) => {
+const nameHtml = ({finalOrder, englishName, kanjiName, hiraganaReading, romaji, literalTranslation}) => {
     return `<div>
+    <div>${finalOrder}</div>
     <h3 class="alignleft">${englishName}</h3>
     <div class="alignright" style="margin-bottom: -3em;">
         <div style="font-size: 1.7em;">${kanjiName}</div>

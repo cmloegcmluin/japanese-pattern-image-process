@@ -1,43 +1,56 @@
 const {downloadImage} = require('./download')
-const {buildFilename, cleanupName} = require('./format')
-const {nameHtml, primaryImageHtml, supplementaryImageHtml, tieOffSectionHtml, superCategoryHtml, subCategoryHtml} = require('./htmlChunks')
+const {formatFilenameForWordpress, cleanupName, replaceQuotedJapaneseWordsWithItalics} = require('./format')
+const {nameHtml, primaryImageHtml, supplementaryImageHtml, tieOffSectionHtml, categoryHtml, subcategoryHtml} = require('./htmlChunks')
 const currentCategories = require('./currentCategories')
 
-const maybeNewCategorySectionWithSideEffectOfUpdatingCurrentCategories = ({superCategory, subCategory}) => {
+const maybeNewCategorySectionWithSideEffectOfUpdatingCurrentCategories = ({category, subcategory}) => {
     let sectionHtml = ''
 
-    if (superCategory !== currentCategories.currentSuperCategory) {
+    if (category !== currentCategories.currentCategory) {
         // WEEEE SIDE EFFECT!!!!
-        currentCategories.currentSuperCategory = superCategory
-        sectionHtml += superCategoryHtml(superCategory)
+        currentCategories.currentCategory = category
+        sectionHtml += categoryHtml(category)
     }
 
-    if (subCategory !== currentCategories.currentSubCategory) {
+    if (subcategory !== currentCategories.currentSubcategory) {
         // WEEEE SIDE EFFECT!!!!
-        currentCategories.currentSubCategory = subCategory
-        sectionHtml += subCategoryHtml(subCategory)
+        currentCategories.currentSubcategory = subcategory
+        sectionHtml += subcategoryHtml(subcategory)
     }
 
     return sectionHtml
 }
 
+const buildWordpressFileUrl = filename => {
+    return `https://cmloegcmluin.files.wordpress.com/2018/10/${filename}.png`
+}
+
 const imageHtml = ({index, filename}) => {
-    const wordpressFileUrl = `https://cmloegcmluin.files.wordpress.com/2018/09/${filename}.png`
+    const wordpressFileUrl = buildWordpressFileUrl(filename)
     return index === 0 ? primaryImageHtml(wordpressFileUrl) : supplementaryImageHtml(wordpressFileUrl)
 }
 
-const imagesSectionWithSideEffectOfDownloadingTheImages = ({rawName, finalOrder, images}) => {
+const imagesSectionWithSideEffectOfDownloadingTheImages = ({primaryNameEnglishTranslation, primaryNameRomaji, finalOrder, images}) => {
     let sectionHtml = ''
 
+    const rawName = `${primaryNameEnglishTranslation}_${primaryNameRomaji}`
     const name = cleanupName(rawName)
 
     images.split(',').sort().forEach((image, index) => {
-        const filename = buildFilename({finalOrder, index, name})
+        const filename = formatFilenameForWordpress({finalOrder, index, name})
 
         // WEEEE SIDE EFFECT!!!!
         downloadImage({image, filename})
 
+        if (index === 1) {
+            sectionHtml += '<div class="alignright" style="margin-right: 0px; margin-bottom: -15px">'
+        }
+
         sectionHtml += imageHtml({index, filename})
+
+        if (index > 0 && index === images.split(',').length - 1) {
+            sectionHtml += '</div>'
+        }
     })
 
     sectionHtml += tieOffSectionHtml()
@@ -45,12 +58,40 @@ const imagesSectionWithSideEffectOfDownloadingTheImages = ({rawName, finalOrder,
     return sectionHtml
 }
 
-const maybeExtraStuffSection = ({notes, alternateNames}) => {
+const maybeExtraStuffSection = ({
+                                    notes,
+                                    alternateNames,
+                                    secondaryNameJapanese,
+                                    secondaryNameEnglishTranslation,
+                                    secondaryNameHiraganaReading,
+                                    secondaryNameRomaji,
+                                    tertiaryNameJapanese,
+                                    tertiaryNameEnglishTranslation,
+                                    tertiaryNameHiraganaReading,
+                                    tertiaryNameRomaji,
+                                    quaternaryNameJapanese,
+                                    quaternaryNameEnglishTranslation,
+                                    quaternaryNameHiraganaReading,
+                                    quaternaryNameRomaji,
+                                    quinternaryNameJapanese,
+                                    quinternaryNameEnglishTranslation,
+                                    quinternaryNameHiraganaReading,
+                                    quinternaryNameRomaji,
+}) => {
     let sectionHtml = ''
 
-    alternateNames.forEach(alternateName => {
-        if (alternateName) sectionHtml += alternateName + '\r\n'
-    })
+    if (secondaryNameJapanese !== '') {
+        sectionHtml += `${secondaryNameJapanese} / ${replaceQuotedJapaneseWordsWithItalics(secondaryNameEnglishTranslation)} / ${secondaryNameHiraganaReading} / ${secondaryNameRomaji}\r\n`
+    }
+    if (tertiaryNameJapanese !== '') {
+        sectionHtml += `${tertiaryNameJapanese} / ${replaceQuotedJapaneseWordsWithItalics(tertiaryNameEnglishTranslation)} / ${tertiaryNameHiraganaReading} / ${tertiaryNameRomaji}\r\n`
+    }
+    if (quaternaryNameJapanese !== '') {
+        sectionHtml += `${quaternaryNameJapanese} / ${replaceQuotedJapaneseWordsWithItalics(quaternaryNameEnglishTranslation)} / ${quaternaryNameHiraganaReading} / ${quaternaryNameRomaji}\r\n`
+    }
+    if (quinternaryNameJapanese !== '') {
+        sectionHtml += `${quinternaryNameJapanese} / ${replaceQuotedJapaneseWordsWithItalics(quinternaryNameEnglishTranslation)} / ${quinternaryNameHiraganaReading} / ${quinternaryNameRomaji}\r\n`
+    }
 
     if (notes) sectionHtml += notes
 
@@ -60,7 +101,7 @@ const maybeExtraStuffSection = ({notes, alternateNames}) => {
 }
 
 const nameSection = argumentsObject => {
-    let sectionHtml = ''
+    let sectionHtml = '<div style="height: 40px;"></div>\r\n'
 
     sectionHtml += nameHtml(argumentsObject)
     sectionHtml += tieOffSectionHtml()

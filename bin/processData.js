@@ -9,41 +9,82 @@ const {prependZeroes} = require('../src/format')
 const parse = require('csv-parse')
 const fs = require('fs')
 
-const INPUT = 'data/data.csv'
+const INPUT = 'data/airtable.csv'
 const OUTPUT_HTML = 'data/post.html'
 
 const parseResult = entry => {
     const [
         id,
-        rawName,
         images,
-        subSubCategory,
-        rawFinalOrder,
-        repetitionType,
+        order,
         geometry,
         represents,
-        modifierFromName,
-        limitedToCraft,
+        category,
+        subcategory,
         notes,
-        fundamentality,
-        superSuperCategory,
-        superCategory,
-        subCategory,
-        originalManualOrder,
-        alternateNameOne,
-        alternateNameTwo,
-        alternateNameThree,
-        alternateNameFour,
+        primaryNameJapanese,
+        primaryNameEnglishTranslation,
+        primaryNameHiraganaReading,
+        primaryNameRomaji,
+        primaryNameEnglishSubstitutionsForKanji,
+        secondaryNameJapanese,
+        secondaryNameEnglishTranslation,
+        secondaryNameHiraganaReading,
+        secondaryNameRomaji,
+        secondaryNameEnglishSubstitutionsForKanji,
+        tertiaryNameJapanese,
+        tertiaryNameEnglishTranslation,
+        tertiaryNameHiraganaReading,
+        tertiaryNameRomaji,
+        tertiaryNameEnglishSubstitutionsForKanji,
+        quaternaryNameJapanese,
+        quaternaryNameEnglishTranslation,
+        quaternaryNameHiraganaReading,
+        quaternaryNameRomaji,
+        quaternaryNameEnglishSubstitutionsForKanji,
+        quinternaryNameJapanese,
+        quinternaryNameEnglishTranslation,
+        quinternaryNameHiraganaReading,
+        quinternaryNameRomaji,
+        quinternaryNameEnglishSubstitutionsForKanji,
     ] = entry
-    const [englishName, kanjiName, hiraganaReading, romaji, literalTranslation] = rawName.split('/').map(namePart => namePart.trim())
-    const alternateNames = [alternateNameOne, alternateNameTwo, alternateNameThree, alternateNameFour]
-    const finalOrder = prependZeroes(rawFinalOrder)
+    const finalOrder = prependZeroes(order)
 
     let html = ''
-    html += maybeNewCategorySectionWithSideEffectOfUpdatingCurrentCategories({superCategory, subCategory})
-    html += nameSection({finalOrder, englishName, kanjiName, hiraganaReading, romaji, literalTranslation})
-    html += imagesSectionWithSideEffectOfDownloadingTheImages({rawName, finalOrder, images})
-    html += maybeExtraStuffSection({notes, alternateNames})
+    html += maybeNewCategorySectionWithSideEffectOfUpdatingCurrentCategories({category, subcategory})
+    html += nameSection({
+        finalOrder,
+        primaryNameEnglishTranslation,
+        primaryNameJapanese,
+        primaryNameHiraganaReading,
+        primaryNameRomaji,
+        primaryNameEnglishSubstitutionsForKanji,
+    })
+    html += imagesSectionWithSideEffectOfDownloadingTheImages({
+        primaryNameEnglishTranslation,
+        primaryNameRomaji,
+        finalOrder,
+        images
+    })
+    html += maybeExtraStuffSection({
+        notes,
+        secondaryNameJapanese,
+        secondaryNameEnglishTranslation,
+        secondaryNameHiraganaReading,
+        secondaryNameRomaji,
+        tertiaryNameJapanese,
+        tertiaryNameEnglishTranslation,
+        tertiaryNameHiraganaReading,
+        tertiaryNameRomaji,
+        quaternaryNameJapanese,
+        quaternaryNameEnglishTranslation,
+        quaternaryNameHiraganaReading,
+        quaternaryNameRomaji,
+        quinternaryNameJapanese,
+        quinternaryNameEnglishTranslation,
+        quinternaryNameHiraganaReading,
+        quinternaryNameRomaji,
+    })
 
     fs.appendFileSync(OUTPUT_HTML, html)
 }

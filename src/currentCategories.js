@@ -1,6 +1,6 @@
 const currentCategories = {
-    currentSubCategory: '',
-    currentSuperCategory: '',
+    currentSubcategory: '',
+    currentCategory: '',
 }
 
 module.exports = currentCategories

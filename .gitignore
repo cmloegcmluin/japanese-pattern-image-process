@@ -1,5 +1,5 @@
 node_modules/
 data/airtable.csv
-data/input
-data/output
+data/input/*
+data/output/*
 .idea/
